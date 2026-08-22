@@ -253,14 +253,15 @@
                 Android Package (.apk)
               </div>
               <div class="text-white font-bold text-sm md:text-lg tracking-tight">
-                Teletraan Mobile
+                Teletraan
               </div>
             </div>
           </div>
           <div
+            id="apk-size"
             class="text-[8px] md:text-[10px] text-white/30 border border-white/10 px-1.5 py-0.5 md:px-2 md:py-1 rounded"
           >
-            93 MB
+            — MB
           </div>
         </div>
 
@@ -366,6 +367,23 @@
             ? 'mac'
             : 'win'
         switchPlatform(detected)
+
+        // APK size badge — read the latest release from GitHub so the number
+        // stays honest as new builds are published. Fails silent if GH is
+        // rate-limited; the placeholder stays and the download link still works.
+        fetch(
+          'https://api.github.com/repos/ayobamizenthos/Teletraan-Mobile-App/releases/latest'
+        )
+          .then(r => (r.ok ? r.json() : null))
+          .then(release => {
+            if (!release) return
+            const apk = (release.assets || []).find(a => a.name === 'Teletraan.apk')
+            if (!apk) return
+            const mb = (apk.size / 1024 / 1024).toFixed(1)
+            const el = document.getElementById('apk-size')
+            if (el) el.textContent = mb + ' MB'
+          })
+          .catch(() => {})
       </script>
     </main>
   </body>
