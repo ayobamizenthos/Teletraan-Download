@@ -379,7 +379,9 @@
             if (!release) return
             const apk = (release.assets || []).find(a => a.name === 'Teletraan.apk')
             if (!apk) return
-            const mb = (apk.size / 1024 / 1024).toFixed(1)
+            // Decimal MB (÷ 1,000,000) — matches what Chrome shows during
+            // download so the badge number and the browser's progress agree.
+            const mb = (apk.size / 1_000_000).toFixed(1)
             const el = document.getElementById('apk-size')
             if (el) el.textContent = mb + ' MB'
           })
